@@ -32,46 +32,49 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
 #include <option/option.h>
-#include <result/result.h>
 
 #if !(defined(__GNUC__) || defined(__clang__))
 #define __attribute__(...)
 #endif
 
-#define CLOSURE_VERSION_MAJOR       0
-#define CLOSURE_VERSION_MINOR       2
-#define CLOSURE_VERSION_PATCH       0
-#define CLOSURE_VERSION_SUFFIX      ""
-#define CLOSURE_VERSION_IS_RELEASE  0
-#define CLOSURE_VERSION_HEX         0x000200
+#define ALLIGATOR_VERSION_MAJOR       0
+#define ALLIGATOR_VERSION_MINOR       22
+#define ALLIGATOR_VERSION_PATCH       0
+#define ALLIGATOR_VERSION_SUFFIX      ""
+#define ALLIGATOR_VERSION_IS_RELEASE  0
+#define ALLIGATOR_VERSION_HEX         0x002200
 
 /**
  * @return The semantic versioning string of the package.
  */
 extern const char *
-Closure_version(void)
+Alligator_version(void)
 __attribute__((__warn_unused_result__));
 
-typedef Result (*Closure_CallFn)(Option, Option);
-typedef void (*Closure_DeleteFn)(Option);
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) || (defined(__cplusplus) && __cplusplus >= 201103L)
 
-struct Closure;
+extern Option
+Alligator_aligned_alloc(size_t alignment, size_t size)
+__attribute__((__warn_unused_result__));
 
-extern OptionOf(struct Closure *)
-Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn)
-__attribute__((__warn_unused_result__, __nonnull__(2, 3)));
+#endif
 
-extern Result
-Closure_call(struct Closure *closure)
-__attribute__((__nonnull__));
+extern Option
+Alligator_malloc(size_t size)
+__attribute__((__warn_unused_result__));
 
-extern Result
-Closure_callWith(struct Closure *closure, Option arguments)
-__attribute__((__nonnull__(1)));
+extern Option
+Alligator_calloc(size_t numberOfMembers, size_t memberSize)
+__attribute__((__warn_unused_result__));
+
+extern Option
+Alligator_realloc(void *ptr, size_t newSize)
+__attribute__((__warn_unused_result__));
 
 extern void
-Closure_delete(struct Closure *closure);
+Alligator_free(void *ptr);
 
 #ifdef __cplusplus
 }

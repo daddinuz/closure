@@ -27,7 +27,7 @@
  */
 
 #include <assert.h>
-#include <stdlib.h>
+#include <alligator/alligator.h>
 #include "closure.h"
 
 #define _STR(x)     #x
@@ -50,8 +50,10 @@ OptionOf(struct Closure *)
 Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn) {
     assert(callFn);
     assert(deleteFn);
-    struct Closure *self = malloc(sizeof(*self));
-    if (self) {
+    struct Closure *self;
+    Option option = Alligator_malloc(sizeof(*self));
+    if (Option_isSome(option)) {
+        self = Option_unwrap(option);
         self->call = callFn;
         self->delete = deleteFn;
         self->environment = environment;
@@ -79,6 +81,6 @@ void Closure_delete(struct Closure *closure) {
         assert(closure->call);
         assert(closure->delete);
         closure->delete(closure->environment);
-        free(closure);
+        Alligator_free(closure);
     }
 }

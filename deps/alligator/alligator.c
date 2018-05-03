@@ -26,53 +26,43 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "alligator.h"
+#include "alligator_config.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define _STR(x)     #x
+#define STR(x)      _STR(x)
 
-#include <option/option.h>
-#include <result/result.h>
-
-#if !(defined(__GNUC__) || defined(__clang__))
-#define __attribute__(...)
-#endif
-
-#define CLOSURE_VERSION_MAJOR       0
-#define CLOSURE_VERSION_MINOR       2
-#define CLOSURE_VERSION_PATCH       0
-#define CLOSURE_VERSION_SUFFIX      ""
-#define CLOSURE_VERSION_IS_RELEASE  0
-#define CLOSURE_VERSION_HEX         0x000200
-
-/**
- * @return The semantic versioning string of the package.
- */
-extern const char *
-Closure_version(void)
-__attribute__((__warn_unused_result__));
-
-typedef Result (*Closure_CallFn)(Option, Option);
-typedef void (*Closure_DeleteFn)(Option);
-
-struct Closure;
-
-extern OptionOf(struct Closure *)
-Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn)
-__attribute__((__warn_unused_result__, __nonnull__(2, 3)));
-
-extern Result
-Closure_call(struct Closure *closure)
-__attribute__((__nonnull__));
-
-extern Result
-Closure_callWith(struct Closure *closure, Option arguments)
-__attribute__((__nonnull__(1)));
-
-extern void
-Closure_delete(struct Closure *closure);
-
-#ifdef __cplusplus
+const char *Alligator_version(void) {
+    return STR(ALLIGATOR_VERSION_MAJOR) "."
+           STR(ALLIGATOR_VERSION_MINOR) "."
+           STR(ALLIGATOR_VERSION_PATCH)
+           ALLIGATOR_VERSION_SUFFIX;
 }
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) || (defined(__cplusplus) && __cplusplus >= 201103L)
+
+Option Alligator_aligned_alloc(size_t alignment, size_t size) {
+    void *memory = __Alligator_aligned_alloc(alignment, size);
+    return memory ? Option_some(memory) : None;
+}
+
 #endif
+
+Option Alligator_malloc(const size_t size) {
+    void *memory = __Alligator_malloc(size);
+    return memory ? Option_some(memory) : None;
+}
+
+Option Alligator_calloc(const size_t numberOfMembers, const size_t memberSize) {
+    void *memory = __Alligator_calloc(numberOfMembers, memberSize);
+    return memory ? Option_some(memory) : None;
+}
+
+Option Alligator_realloc(void *ptr, size_t newSize) {
+    void *memory = __Alligator_realloc(ptr, newSize);
+    return memory ? Option_some(memory) : None;
+}
+
+void Alligator_free(void *ptr) {
+    __Alligator_free(ptr);
+}

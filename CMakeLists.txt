@@ -5,13 +5,15 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
 
 include_directories(deps)
+include(deps/panic/panic.cmake)
 include(deps/error/error.cmake)
 include(deps/option/option.cmake)
-include(deps/panic/panic.cmake)
 include(deps/result/result.cmake)
+include(deps/alligator/alligator.cmake)
 
 add_library(closure sources/closure.h sources/closure.c)
 target_link_libraries(closure PUBLIC option result)
+target_link_libraries(closure PRIVATE alligator)
 
 add_library(adder examples/adder.h examples/adder.c)
 target_link_libraries(adder PUBLIC closure option result)

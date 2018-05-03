@@ -26,52 +26,44 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+* Underlying allocator configuration.
+*
+* Update this file is in order to change at compile time the allocator that alligator is going to use.
+* Just define the macros below to what you want to use and include the proper files.
+*
+* WARNING:
+*  The macros below are intended for internal use only, DO NOT INCLUDE THIS FILE directly in your code.
+*/
+
 #pragma once
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <option/option.h>
-#include <result/result.h>
+#include <stdlib.h>
 
-#if !(defined(__GNUC__) || defined(__clang__))
-#define __attribute__(...)
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L) || (defined(__cplusplus) && __cplusplus >= 201103L)
+
+#include <stdalign.h>
+
+#define __Alligator_aligned_alloc(alignment, size) \
+    aligned_alloc((alignment), (size))
+
 #endif
 
-#define CLOSURE_VERSION_MAJOR       0
-#define CLOSURE_VERSION_MINOR       2
-#define CLOSURE_VERSION_PATCH       0
-#define CLOSURE_VERSION_SUFFIX      ""
-#define CLOSURE_VERSION_IS_RELEASE  0
-#define CLOSURE_VERSION_HEX         0x000200
+#define __Alligator_malloc(size) \
+    malloc((size))
 
-/**
- * @return The semantic versioning string of the package.
- */
-extern const char *
-Closure_version(void)
-__attribute__((__warn_unused_result__));
+#define __Alligator_calloc(numberOfMembers, memberSize) \
+    calloc((numberOfMembers), (memberSize))
 
-typedef Result (*Closure_CallFn)(Option, Option);
-typedef void (*Closure_DeleteFn)(Option);
+#define __Alligator_realloc(ptr, newSize) \
+    realloc((ptr), (newSize))
 
-struct Closure;
-
-extern OptionOf(struct Closure *)
-Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn)
-__attribute__((__warn_unused_result__, __nonnull__(2, 3)));
-
-extern Result
-Closure_call(struct Closure *closure)
-__attribute__((__nonnull__));
-
-extern Result
-Closure_callWith(struct Closure *closure, Option arguments)
-__attribute__((__nonnull__(1)));
-
-extern void
-Closure_delete(struct Closure *closure);
+#define __Alligator_free(ptr) \
+    free((ptr))
 
 #ifdef __cplusplus
 }
