@@ -40,17 +40,16 @@ extern "C" {
 #endif
 
 #define CLOSURE_VERSION_MAJOR       0
-#define CLOSURE_VERSION_MINOR       2
+#define CLOSURE_VERSION_MINOR       3
 #define CLOSURE_VERSION_PATCH       0
 #define CLOSURE_VERSION_SUFFIX      ""
 #define CLOSURE_VERSION_IS_RELEASE  0
-#define CLOSURE_VERSION_HEX         0x000200
+#define CLOSURE_VERSION_HEX         0x000300
 
 /**
  * @return The semantic versioning string of the package.
  */
-extern const char *
-Closure_version(void)
+extern const char *Closure_version(void)
 __attribute__((__warn_unused_result__));
 
 typedef Result (*Closure_CallFn)(Option, Option);
@@ -58,20 +57,16 @@ typedef void (*Closure_DeleteFn)(Option);
 
 struct Closure;
 
-extern OptionOf(struct Closure *)
-Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn)
+extern OptionOf(struct Closure *) Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn)
 __attribute__((__warn_unused_result__, __nonnull__(2, 3)));
 
-extern Result
-Closure_call(struct Closure *closure)
+extern Result Closure_call(struct Closure *closure)
 __attribute__((__nonnull__));
 
-extern Result
-Closure_callWith(struct Closure *closure, Option arguments)
+extern Result Closure_callWith(struct Closure *closure, Option arguments)
 __attribute__((__nonnull__(1)));
 
-extern void
-Closure_delete(struct Closure *closure);
+extern void Closure_delete(struct Closure *closure);
 
 #ifdef __cplusplus
 }

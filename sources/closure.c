@@ -46,8 +46,7 @@ struct Closure {
     Option environment;
 };
 
-OptionOf(struct Closure *)
-Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn) {
+OptionOf(struct Closure *) Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn) {
     assert(callFn);
     assert(deleteFn);
     struct Closure *self;

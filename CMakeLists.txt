@@ -12,12 +12,12 @@ include(deps/result/result.cmake)
 include(deps/alligator/alligator.cmake)
 
 add_library(closure sources/closure.h sources/closure.c)
-target_link_libraries(closure PUBLIC option result)
 target_link_libraries(closure PRIVATE alligator)
+target_link_libraries(closure PUBLIC option result)
 
 add_library(adder examples/adder.h examples/adder.c)
-target_link_libraries(adder PUBLIC closure option result)
 target_include_directories(adder PRIVATE sources)
+target_link_libraries(adder PUBLIC closure)
 
 add_executable(adder-main examples/adder-main.c)
 target_link_libraries(adder-main PRIVATE adder)

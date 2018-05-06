@@ -39,11 +39,9 @@ struct AdderEnvironment {
     const int x;
 };
 
-static OptionOf(struct AdderEnvironment *)
-AdderEnvironment_new(int x);
+static OptionOf(struct AdderEnvironment *) AdderEnvironment_new(int x);
 
-static void
-AdderEnvironment_delete(struct AdderEnvironment *self);
+static void AdderEnvironment_delete(struct AdderEnvironment *self);
 
 /*
  * AdderArguments
@@ -62,8 +60,7 @@ struct AdderResult {
     int value;
 };
 
-static OptionOf(struct AdderResult *)
-AdderResult_new(int value);
+static OptionOf(struct AdderResult *) AdderResult_new(int value);
 
 /*
  * AdderClosure
@@ -72,11 +69,9 @@ struct AdderClosure {
     struct Closure *closure;
 };
 
-static Result
-AdderClosure_callImpl(Option environment, Option arguments);
+static Result AdderClosure_callImpl(Option environment, Option arguments);
 
-static void
-AdderClosure_deleteImpl(Option environment);
+static void AdderClosure_deleteImpl(Option environment);
 
 /*
  * IMPLEMENTATION

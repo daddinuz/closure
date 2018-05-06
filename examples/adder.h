@@ -41,25 +41,20 @@ extern "C" {
  */
 struct AdderResult;
 
-extern int
-AdderResult_get(const struct AdderResult *self);
+extern int AdderResult_get(const struct AdderResult *self);
 
-extern void
-AdderResult_delete(struct AdderResult *self);
+extern void AdderResult_delete(struct AdderResult *self);
 
 /*
  * AdderClosure
  */
 struct AdderClosure;
 
-extern OptionOf(struct AdderClosure *)
-AdderClosure_new(int x);
+extern OptionOf(struct AdderClosure *) AdderClosure_new(int x);
 
-extern ResultOf(struct AdderResult *, OutOfMemory)
-AdderClosure_call(struct AdderClosure *self, int y);
+extern ResultOf(struct AdderResult *, OutOfMemory) AdderClosure_call(struct AdderClosure *self, int y);
 
-extern void
-AdderClosure_delete(struct AdderClosure *self);
+extern void AdderClosure_delete(struct AdderClosure *self);
 
 #ifdef __cplusplus
 }
