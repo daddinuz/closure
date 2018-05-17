@@ -31,7 +31,7 @@
 
 int main() {
     struct AdderResult *result;
-    struct AdderClosure *add5 = Option_unwrap(AdderClosure_new(5));
+    struct AdderClosure *add5 = AdderClosure_new(5);
 
     printf("%d\n", AdderResult_get(result = Result_unwrap(AdderClosure_call(add5, 8))));
     AdderResult_delete(result);

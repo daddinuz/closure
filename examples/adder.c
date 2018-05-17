@@ -26,10 +26,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <stdlib.h>
 #include <assert.h>
 #include <memory.h>
 #include <closure.h>
+#include <alligator/alligator.h>
 #include "adder.h"
 
 /*
@@ -39,7 +39,7 @@ struct AdderEnvironment {
     const int x;
 };
 
-static OptionOf(struct AdderEnvironment *) AdderEnvironment_new(int x);
+static struct AdderEnvironment *AdderEnvironment_new(int x);
 
 static void AdderEnvironment_delete(struct AdderEnvironment *self);
 
@@ -60,7 +60,7 @@ struct AdderResult {
     int value;
 };
 
-static OptionOf(struct AdderResult *) AdderResult_new(int value);
+static struct AdderResult *AdderResult_new(int value);
 
 /*
  * AdderClosure
@@ -80,30 +80,24 @@ static void AdderClosure_deleteImpl(Option environment);
 /*
  * AdderEnvironment
  */
-OptionOf(struct AdderEnvironment *) AdderEnvironment_new(int x) {
-    struct AdderEnvironment *self = malloc(sizeof(*self));
-    if (self) {
-        struct AdderEnvironment init = {.x=x};
-        memcpy(self, &init, sizeof(*self));
-        return Option_some(self);
-    }
-    return None;
+struct AdderEnvironment *AdderEnvironment_new(int x) {
+    struct AdderEnvironment *self = Option_unwrap(Alligator_malloc(sizeof(*self)));
+    struct AdderEnvironment init = {.x=x};
+    memcpy(self, &init, sizeof(*self));
+    return self;
 }
 
 void AdderEnvironment_delete(struct AdderEnvironment *self) {
-    free(self);
+    Alligator_free(self);
 }
 
 /*
  * AdderResult
  */
-OptionOf(struct AdderResult *) AdderResult_new(int value) {
-    struct AdderResult *self = malloc(sizeof(*self));
-    if (self) {
-        self->value = value;
-        return Option_some(self);
-    }
-    return None;
+struct AdderResult *AdderResult_new(int value) {
+    struct AdderResult *self = Option_unwrap(Alligator_malloc(sizeof(*self)));
+    self->value = value;
+    return self;
 }
 
 int AdderResult_get(const struct AdderResult *self) {
@@ -112,29 +106,18 @@ int AdderResult_get(const struct AdderResult *self) {
 }
 
 void AdderResult_delete(struct AdderResult *self) {
-    free(self);
+    Alligator_free(self);
 }
 
 /*
  * AdderClosure
  */
-OptionOf(struct AdderClosure *) AdderClosure_new(int x) {
-    Option option = AdderEnvironment_new(x);
-    if (Option_isSome(option)) {
-        struct AdderEnvironment *environment = Option_unwrap(option);
-        option = Closure_new(Option_some(environment), AdderClosure_callImpl, AdderClosure_deleteImpl);
-        if (Option_isSome(option)) {
-            struct Closure *closure = Option_unwrap(option);
-            struct AdderClosure *self = malloc(sizeof(*self));
-            if (self) {
-                self->closure = closure;
-                return Option_some(self);
-            }
-            Closure_delete(closure);
-        }
-        AdderEnvironment_delete(environment);
-    }
-    return None;
+struct AdderClosure *AdderClosure_new(int x) {
+    struct AdderEnvironment *environment = AdderEnvironment_new(x);
+    struct Closure *closure = Closure_new(Option_some(environment), AdderClosure_callImpl, AdderClosure_deleteImpl);
+    struct AdderClosure *self = Option_unwrap(Alligator_malloc(sizeof(*self)));
+    self->closure = closure;
+    return self;
 }
 
 ResultOf(struct AdderResult *, OutOfMemory) AdderClosure_call(struct AdderClosure *self, int y) {
@@ -146,7 +129,7 @@ void AdderClosure_delete(struct AdderClosure *self) {
     if (self) {
         Closure_delete(self->closure);
     }
-    free(self);
+    Alligator_free(self);
 }
 
 Result AdderClosure_callImpl(Option environment, Option arguments) {
@@ -154,11 +137,7 @@ Result AdderClosure_callImpl(Option environment, Option arguments) {
     assert(Option_isSome(arguments));
     struct AdderEnvironment *adderEnvironment = Option_unwrap(environment);
     struct AdderArguments *adderArguments = Option_unwrap(arguments);
-    OptionOf(struct AdderResult *) option = AdderResult_new(adderEnvironment->x + adderArguments->y);
-    if (Option_isSome(option)) {
-        return Result_ok(Option_unwrap(option));
-    }
-    return Result_error(OutOfMemory);
+    return Result_ok(AdderResult_new(adderEnvironment->x + adderArguments->y));
 }
 
 void AdderClosure_deleteImpl(Option environment) {

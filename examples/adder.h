@@ -32,8 +32,6 @@
 extern "C" {
 #endif
 
-#include <error/error.h>
-#include <option/option.h>
 #include <result/result.h>
 
 /*
@@ -50,9 +48,9 @@ extern void AdderResult_delete(struct AdderResult *self);
  */
 struct AdderClosure;
 
-extern OptionOf(struct AdderClosure *) AdderClosure_new(int x);
+extern struct AdderClosure *AdderClosure_new(int x);
 
-extern ResultOf(struct AdderResult *, OutOfMemory) AdderClosure_call(struct AdderClosure *self, int y);
+extern ResultOf(struct AdderResult *) AdderClosure_call(struct AdderClosure *self, int y);
 
 extern void AdderClosure_delete(struct AdderClosure *self);
 

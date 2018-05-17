@@ -1,7 +1,7 @@
 {
   "name": "closure",
   "repo": "daddinuz/closure",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "description": "",
   "keywords": [
@@ -12,9 +12,9 @@
     "sources/closure.c"
   ],
   "dependencies": {
-    "daddinuz/result": "0.2.0",
-    "daddinuz/option": "0.21.0",
-    "daddinuz/alligator": "0.23.0"
+    "daddinuz/result": "0.3.0",
+    "daddinuz/option": "0.22.0",
+    "daddinuz/alligator": "0.24.0"
   },
-  "makefile": "closure.cmake"
+  "makefile": "sources/build.cmake"
 }

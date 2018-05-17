@@ -30,35 +30,20 @@
 #include <alligator/alligator.h>
 #include "closure.h"
 
-#define _STR(x)     #x
-#define STR(x)      _STR(x)
-
-const char *Closure_version(void) {
-    return STR(CLOSURE_VERSION_MAJOR) "."
-           STR(CLOSURE_VERSION_MINOR) "."
-           STR(CLOSURE_VERSION_PATCH)
-           CLOSURE_VERSION_SUFFIX;
-}
-
 struct Closure {
     Closure_CallFn call;
     Closure_DeleteFn delete;
     Option environment;
 };
 
-OptionOf(struct Closure *) Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn) {
+struct Closure *Closure_new(Option environment, Closure_CallFn callFn, Closure_DeleteFn deleteFn) {
     assert(callFn);
     assert(deleteFn);
-    struct Closure *self;
-    Option option = Alligator_malloc(sizeof(*self));
-    if (Option_isSome(option)) {
-        self = Option_unwrap(option);
-        self->call = callFn;
-        self->delete = deleteFn;
-        self->environment = environment;
-        return Option_some(self);
-    }
-    return None;
+    struct Closure *self = Option_unwrap(Alligator_malloc(sizeof(*self)));
+    self->call = callFn;
+    self->delete = deleteFn;
+    self->environment = environment;
+    return self;
 }
 
 Result Closure_call(struct Closure *const closure) {
